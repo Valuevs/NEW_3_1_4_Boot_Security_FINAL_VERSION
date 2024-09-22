@@ -141,93 +141,80 @@
                     </table>
                   </div>
                 </div>
-            <!-- Popup for New User -->
-            <div id="newUserPopup" class="popup">
-              <div class="popup-header">
-                <a href="#">×</a> <!-- Закрыть модальное окно -->
-              </div>
-              <h3>Add New User</h3>
 
-              <form th:action="@{/admin/new}" method="post">
-                <div class="form-group">
-                  <label for="firstName">First name</label>
-                  <input type="text" class="form-control" id="firstName" name="firstName" required>
-                </div>
-                <div class="form-group">
-                  <label for="lastName">Last name</label>
-                  <input type="text" class="form-control" id="lastName" name="lastName" required>
-                </div>
-                <div class="form-group">
-                  <label for="age">Age</label>
-                  <input type="number" class="form-control" id="age" name="age" required>
-                </div>
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="form-group">
-                  <label for="role">Roles</label>
-                  <select class="form-control" multiple id="role" name="roles">
-                    <option th:each="role : ${roles}" th:text="${role.getName()}"
-                            th:value="${role.getId()}"></option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Save User</button>
-              </form>
-            </div>
+                <div id="newUserPopup" class="popup">
+                  <div class="popup-header">
+                    <a href="#">×</a>
+                  </div>
+                  <h3>Add New User</h3>
 
+                  <form id="new-user-form">
+                    <div class="form-group">
+                      <label for="firstName">First name</label>
+                      <input type="text" class="form-control" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="lastName">Last name</label>
+                      <input type="text" class="form-control" id="lastName" name="lastName" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="age">Age</label>
+                      <input type="number" class="form-control" id="age" name="age" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="email">Email</label>
+                      <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="password">Password</label>
+                      <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="role">Roles</label>
+                      <select class="form-control" multiple id="roles" name="roles">
+                        <!-- Роли будут загружаться через JS -->
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save User</button>
+                  </form>
+                </div>
 
-            <div class="popup-overlay"></div>
+                <!-- Edit User Modal -->
+                <div id="editUserModal" class="popup">
+                  <div class="popup-header">
+                    <a href="#">×</a>
+                  </div>
+                <!--<div id="editUserModal" class="popup">  -->
+                  <div>
+                    <h3>Edit User</h3>
+                    <form id="editUserForm">
+                      <input type="hidden" id="editUserId">
+                      <div class="form-group">
+                        <label for="editFirstName">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editLastName">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editAge">Age</label>
+                        <input type="number" class="form-control" id="editAge" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" class="form-control" id="editEmail" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editRoles">Roles</label>
+                        <select multiple class="form-control" id="editRoles"></select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Update User</button>
+                    </form>
+                  </div>
+                </div>
 
-            <!-- Edit User Popup -->
-            <div th:each="user : ${users}" th:id="'editUserPopup' + ${user.getId()}" class="popup">
-              <div class="popup-header">
-                <a href="#">×</a>
-              </div>
-              <h3>Edit User</h3>
-              <form th:action="@{/admin/update/{id}(id=${user.getId()})}" method="post">
-                <div class="form-group">
-                  <label for="id">ID</label>
-                  <input type="number" class="form-control" id="id" th:value="${user.getId()}"
-                         name="id">
-                </div>
-                <div class="form-group">
-                  <label for="firstName">First name</label>
-                  <input type="text" class="form-control" id="firstName"
-                         name="firstName">
-                </div>
-                <div class="form-group">
-                  <label for="lastName">Last name</label>
-                  <input type="text" class="form-control" id="lastName"
-                         name="lastName">
-                </div>
-                <div class="form-group">
-                  <label for="age">Age</label>
-                  <input type="number" class="form-control" id="age" name="age">
-                </div>
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" class="form-control" id="email" name="email">
-                </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="form-group">
-                  <label for="role">Roles</label>
-                  <select class="form-control" multiple id="role" name="roles">
-                    <option th:each="role : ${roles}" th:text="${role.getName()}"
-                            th:value="${role.getId()}"></option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Update User</button>
-              </form>
-            </div>
-            <div class="popup-overlay"></div>
+                <div class="popup-overlay"></div>
 
             <!-- Delete User Popup -->
             <div th:each="user : ${users}" th:id="'deleteUserPopup' + ${user.getId()}" class="popup">
