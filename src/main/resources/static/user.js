@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Запрашиваем данные о пользователе через API
-    fetch("/api/user")
+    fetch("/user/profile_user")
         .then(response => response.json())
         .then(user => {
             // Заполняем поля на странице
@@ -14,8 +14,11 @@ document.addEventListener("DOMContentLoaded", function () {
             let roles = user.authorities.map(role => role.authority.substring(5)).join(", ");
             document.getElementById("roles").textContent = roles;
 
-            // Для отображения роли пользователя в навигации
+
+            // Для отображения роли пользователя в навигации\
+            document.getElementById("navbarUserEmail").textContent = user.username;
             document.getElementById("navbarUserRoles").textContent = roles;
+
         })
         .catch(error => console.error("Error fetching user data:", error));
 });
