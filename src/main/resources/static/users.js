@@ -1,34 +1,32 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Функция для заполнения таблицы пользователей
-    function loadUsers() {
-        fetch("/admin/users")
-            .then(response => response.json())
-            .then(users => {
-                const usersTableBody = document.getElementById("usersTableBody");
-                usersTableBody.innerHTML = ""; // Очищаем таблицу
-                users.forEach(user => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                <td>${user.id}</td>
-                <td>${user.firstName}</td>
-                <td>${user.lastName}</td>
-                <td>${user.age}</td>
-                <td>${user.email}</td>
-                <td>${user.authorities.map(role => role.authority.substring(5)).join(", ")}</td>
-                <td><a href="#editUserPopup${user.id}" class="btn btn-info">Edit</a></td>
-                <td><a href="#deleteUserPopup${user.id}" class="btn btn-danger">Delete</a></td>
-              `;
-                    usersTableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error("Error loading users:", error));
-
-    }
-
-    // Заполняем информацию в навбаре
-    document.getElementById("navbarUserEmail").textContent = "example@domain.com";  // Пример
-    document.getElementById("navbarUserRoles").textContent =  users.getRole();  // Пример
-
-    // Загружаем пользователей при загрузке страницы
-    loadUsers();
+document.addEventListener('DOMContentLoaded', function () {
+    fetchUsers();
 });
+
+function fetchUsers() {
+    fetch('/admin/users')
+        .then(response => response.json())
+        .then(users => {
+            const tableBody = document.getElementById('users-table-body');
+            tableBody.innerHTML = ''; // Очищаем таблицу
+
+            users.forEach(user => {
+                const row = `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.firstName}</td>
+                        <td>${user.lastName}</td>
+                        <td>${user.age}</td>
+                        <td>${user.email}</td>
+                        <td>${user.authorities.map(role => role.authority).join(', ')}</td>
+                        <td><button class="btn btn-info" onclick="openEditUserPopup(${user.id})">Edit</button></td>
+                        <td><button class="btn btn-danger" onclick="openDeleteUserPopup(${user.id})">Delete</button></td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+
+

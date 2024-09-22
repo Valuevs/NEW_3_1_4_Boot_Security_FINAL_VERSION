@@ -67,17 +67,18 @@
   </style>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark p-0 shadow">
-  <div class="nav-item text-left text-white px-3">
-    <span id="navbarUserEmail"></span>
-    <span>with roles:</span>
-    <span id="navbarUserRoles"></span>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">
+    <span th:text="${currentUserEmail}"></span> with roles: <span th:each="role : ${currentUserRoles}"
+                                                                  th:text="${role.getAuthority()} + ' '"></span>
+  </a>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link px-3" href="/logout">Logout</a>
+      </li>
+    </ul>
   </div>
-  <ul class="navbar-nav mr-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link px-3" href="/logout">Logout</a>
-    </li>
-  </ul>
 </nav>
 <div class="row">
   <div class="col-md-2 px-0">
@@ -134,37 +135,12 @@
                         <th>Delete</th>
                       </tr>
                       </thead>
-                      <tbody>
-                      <tr th:each="user : ${users}">
-                        <td><p th:text="${user.getId()}"></p></td>
-                        <td><a th:href="@{/admin/user(id=${user.getId()})}"
-                               th:text="| ${user.getFirstName()} |"></a></td>
-                        <td><a th:href="@{/admin/user(id=${user.getId()})}"
-                               th:text="| ${user.getLastName()} |"></a></td>
-                        <td><p th:text="${user.getAge()}"></p></td>
-                        <td><p th:text="${user.getEmail()}"></p></td>
-                        <td>
-                          <span th:each="role : ${user.authorities}"
-                                th:text="${#strings.substring(role.getAuthority(), 5)} + ' '">
-                          </span>
-                        </td>
-
-                        <!-- Кнопки Edit и Delete с правильными ссылками -->
-                        <td>
-                          <a th:href="'#editUserPopup' + ${user.getId()}"
-                             class="btn btn-info">Edit</a>
-                        </td>
-                        <td>
-                          <a th:href="'#deleteUserPopup' + ${user.getId()}"
-                             class="btn btn-danger">Delete</a>
-                        </td>
-                      </tr>
+                      <tbody id="users-table-body">
+                      <!-- Данные будут загружаться через JS -->
                       </tbody>
                     </table>
                   </div>
                 </div>
-              </div>
-            </div>
             <!-- Popup for New User -->
             <div id="newUserPopup" class="popup">
               <div class="popup-header">
@@ -303,6 +279,7 @@
             </div>
             <div class="popup-overlay"></div>
 
-            <script src="/users.js"></script>
+
+               <script src="/users.js"></script>
 </body>
 </html>
