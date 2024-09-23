@@ -163,7 +163,7 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
     }));
 
     const user = {
-        id: userId,
+        id: userId, // Не забывайте id
         firstName: formData.get('editFirstName'),
         lastName: formData.get('editLastName'),
         age: parseInt(formData.get('editAge'), 10),
@@ -173,7 +173,7 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
 
     console.log('Updating user:', user);
 
-    fetch('/admin/users', { // Соответствует вашему контроллеру
+    fetch('/admin/users', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -182,12 +182,14 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
     })
         .then(response => {
             if (response.ok) {
-                fetchUsers();
+                fetchUsers(); // Перезагрузите таблицу
                 alert('Пользователь успешно обновлен!');
                 closeModal('editUserModal');
             } else {
                 return response.json().then(data => {
-                    throw new Error(data.message || 'Не удалось обновить пользователя');
+                    console.error('Ошибка обновления:', data);
+                    alert('Ошибка при обновлении пользователя: ' + data.message);
+                    //  ...  отобразить ошибку на странице
                 });
             }
         })
@@ -214,10 +216,10 @@ function openDeleteUserPopup(userId) {
                     });
                 }
             })
-            .catch(error => {
-                console.error('Error deleting user:', error);
-                alert('Ошибка при удалении пользователя: ' + error.message);
-            });
+           .catch(error => {
+               console.error('Error deleting user:', error);
+              alert('Ошибка при удалении пользователя: ' + error.message);
+           });
     }
 }
 

@@ -11,7 +11,11 @@ import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
+
+import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -26,6 +30,21 @@ public class AdminController {
         this.userService = userService;
         this.roleDao = roleDao;
     }
+
+
+
+//    // Получение всех пользователей, ролей и текущего пользователя
+//    @GetMapping("/users")
+//    public ResponseEntity<Map<String, Object>> allUserTable(Principal principal) {
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("users", userService.findAllUsers());
+//        response.put("roles", roleDao.findAll());
+//        response.put("currentUserEmail", principal.getName());
+//        User currentUser = userService.findByEmail(principal.getName());
+//        response.put("currentUserRoles", currentUser.getAuthorities());
+//        response.put("user", currentUser);
+//        return ResponseEntity.ok(response);
+//    }
 
     // Получение всех пользователей
     @GetMapping("/users")
@@ -49,12 +68,17 @@ public class AdminController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    // Обновление пользователя
-    @PutMapping("/users")      //возможно надо будет добавлять id
+
+    @PutMapping("/users")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
-        userService.saveUser(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        // Проверка ID
+        if (user.getId() == null) {
+            return ResponseEntity.badRequest().body(null); // Или другая ошибка
+        }
+        userService.updateUser(user.getId(), user);
+        return ResponseEntity.ok(user);
     }
+
 
     // Удаление пользователя
     @DeleteMapping("/users/{id}")

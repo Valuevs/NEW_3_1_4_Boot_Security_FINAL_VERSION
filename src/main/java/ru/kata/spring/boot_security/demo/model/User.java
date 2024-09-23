@@ -36,7 +36,6 @@ public class User implements UserDetails {
 
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JsonIgnore
     List<Role> roles;
 
 

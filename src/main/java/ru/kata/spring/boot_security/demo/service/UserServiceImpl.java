@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,8 @@ public class UserServiceImpl implements UserService {
 
     @PersistenceContext
     private EntityManager em;
-
+@Autowired
+private  PasswordEncoder passwordEncoder ;
 
     private final UserDao userDao;
 
@@ -46,10 +48,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void saveUser(User user) {
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.setRoles(user.getRoles());
+
+       user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+       user.setRoles(user.getRoles());
         userDao.save(user);
     }
+
 
 
     @Override
@@ -65,19 +69,21 @@ public class UserServiceImpl implements UserService {
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setAge(updatedUser.getAge());
 
-            // Если пароль был изменен, хешируем и сохраняем новый
-            if (!updatedUser.getPassword().equals(existingUser.getPassword())) {
-                existingUser.setPassword(new BCryptPasswordEncoder().encode(updatedUser.getPassword()));
-            }
-
             // Обновляем роли пользователя
             existingUser.setRoles(updatedUser.getRoles());
+
+            // Обновляем пароль, если он был изменен
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
 
             userDao.save(existingUser);
             return true;
         }
         return false;
     }
+
+
 
 
     @Override
