@@ -1,18 +1,13 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
-
 import ru.kata.spring.boot_security.demo.model.User;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,10 +15,9 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    @PersistenceContext
-    private EntityManager em;
-@Autowired
-private  PasswordEncoder passwordEncoder ;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private final UserDao userDao;
 
@@ -49,11 +43,10 @@ private  PasswordEncoder passwordEncoder ;
     @Transactional
     public void saveUser(User user) {
 
-       user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-       user.setRoles(user.getRoles());
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setRoles(user.getRoles());
         userDao.save(user);
     }
-
 
 
     @Override
@@ -82,8 +75,6 @@ private  PasswordEncoder passwordEncoder ;
         }
         return false;
     }
-
-
 
 
     @Override

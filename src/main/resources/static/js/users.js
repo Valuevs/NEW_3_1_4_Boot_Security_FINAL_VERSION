@@ -1,25 +1,49 @@
 document.addEventListener('DOMContentLoaded', function () {
+    fetchCurrentUser();
     fetchUsers();
     loadRoles();
     setupCloseButtons();
 });
 
+
+// Функция для получения и отображения текущего пользователя
+function fetchCurrentUser() {
+    console.log('Fetching current user info...');
+    fetch('/admin/currentUser') // Этот URL должен совпадать с тем, что в контроллере
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch current user info');
+            }
+            return response.json();
+        })
+        .then(user => {
+            console.log('Current user fetched:', user);
+            const emailSpan = document.getElementById('currentUserEmail');
+            const roleSpan = document.getElementById('currentUserRole');
+            emailSpan.textContent = user.email;
+            roleSpan.textContent = user.roles.map(role => role.name).join(', '); // Преобразуем массив ролей в строку
+        })
+        .catch(error => {
+            console.error('Error fetching current user info:', error);
+        });
+}
+
 // Функция для получения и отображения всех пользователей
 function fetchUsers() {
     console.log('Fetching users...');
-    fetch('/admin/users')
+    fetch('/admin/users') // Проверьте этот URL
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch users');
             }
             return response.json();
         })
-        .then(users => {
-            console.log('Users fetched:', users);
+        .then(response => {
+            console.log('Users fetched:', response);
             const tableBody = document.getElementById('users-table-body');
             tableBody.innerHTML = ''; // Очищаем существующие строки
 
-            users.forEach(user => {
+            response.forEach(user => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${user.id}</td>
@@ -27,12 +51,13 @@ function fetchUsers() {
                     <td>${user.lastName}</td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
-                    <td>${user.authorities.map(role => role.authority).join(', ')}</td>
+                    <td>${user.roles.map(role => role.name).join(', ')}</td> 
                     <td><button class="btn btn-info" onclick="openEditUserPopup(${user.id})">Edit</button></td>
                     <td><button class="btn btn-danger" onclick="openDeleteUserPopup(${user.id})">Delete</button></td>
                 `;
                 tableBody.appendChild(row);
             });
+
         })
         .catch(error => {
             console.error('Error fetching users:', error);
@@ -216,10 +241,10 @@ function openDeleteUserPopup(userId) {
                     });
                 }
             })
-           .catch(error => {
-               console.error('Error deleting user:', error);
-              alert('Ошибка при удалении пользователя: ' + error.message);
-           });
+            .catch(error => {
+                console.error('Error deleting user:', error);
+                alert('Ошибка при удалении пользователя: ' + error.message);
+            });
     }
 }
 
