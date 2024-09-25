@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.model;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,13 +19,11 @@ public class User implements UserDetails {
     @Column(name = "first_name")
     private String firstName;
 
-
     @Column(name = "last_name")
     private String lastName;
 
     @Column(name = "age")
     private int age;
-
 
     @Column(name = "email")
     private String email;
@@ -34,10 +31,8 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-
     @ManyToMany(fetch = FetchType.EAGER)
     List<Role> roles;
-
 
     public User(String firstName, String lastName, int age, String email, String password, List<Role> roles) {
         this.firstName = firstName;
@@ -47,7 +42,6 @@ public class User implements UserDetails {
         this.password = password;
         this.roles = roles;
     }
-
 
     public User() {
     }
@@ -60,7 +54,6 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-
     public Long getId() {
         return id;
     }
@@ -68,7 +61,6 @@ public class User implements UserDetails {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -140,7 +132,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 
     public List<Role> getRoles() {
         return roles;

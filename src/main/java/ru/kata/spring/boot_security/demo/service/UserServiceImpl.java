@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
@@ -15,18 +15,15 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userDao;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    private final UserDao userDao;
-
-    @Autowired
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserRepository userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
 
     }
-
 
     @Override
     public User findUserById(Long userId) {
@@ -42,12 +39,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void saveUser(User user) {
-
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         user.setRoles(user.getRoles());
         userDao.save(user);
     }
-
 
     @Override
     @Transactional
@@ -55,27 +50,22 @@ public class UserServiceImpl implements UserService {
         Optional<User> userFromDb = userDao.findById(id);
         if (userFromDb.isPresent()) {
             User existingUser = userFromDb.get();
-
             // Обновляем остальные поля пользователя
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setLastName(updatedUser.getLastName());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setAge(updatedUser.getAge());
-
             // Обновляем роли пользователя
             existingUser.setRoles(updatedUser.getRoles());
-
             // Обновляем пароль, если он был изменен
             if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             }
-
             userDao.save(existingUser);
             return true;
         }
         return false;
     }
-
 
     @Override
     @Transactional
@@ -86,7 +76,6 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
-
 
     @Override
     public User findByEmail(String email) {

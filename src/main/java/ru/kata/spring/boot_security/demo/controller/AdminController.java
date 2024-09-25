@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.dao.RoleDao;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -18,14 +18,13 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
-    private final RoleDao roleDao;
+    private final RoleRepository roleDao;
 
     @Autowired
-    public AdminController(UserService userService, RoleDao roleDao) {
+    public AdminController(UserService userService, RoleRepository roleDao) {
         this.userService = userService;
         this.roleDao = roleDao;
     }
-
 
     // Получение информации о текущем пользователе
     @GetMapping("/currentUser")
@@ -34,14 +33,10 @@ public class AdminController {
         return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
 
-
-    // Получение всех пользователей
+    //Получение всех пользователей
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers(Principal principal) {
-        userService.findByEmail(principal.getName());
-        List<User> allUsers = userService.findAllUsers();
-        return new ResponseEntity<>(allUsers, HttpStatus.OK);
-
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(userService.findAllUsers(), HttpStatus.OK);
     }
 
     // Получение информации о пользователе по ID
@@ -58,7 +53,7 @@ public class AdminController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-
+    // Редактирование
     @PutMapping("/users")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         // Проверка ID
@@ -69,7 +64,6 @@ public class AdminController {
         return ResponseEntity.ok(user);
     }
 
-
     // Удаление пользователя
     @DeleteMapping("/users/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id) {
@@ -77,7 +71,7 @@ public class AdminController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-
+    //Загрузка ролей
     @GetMapping("users/roles")
     public ResponseEntity<List<Role>> getAllRoles() {
         return new ResponseEntity<>(roleDao.findAll(), HttpStatus.OK);

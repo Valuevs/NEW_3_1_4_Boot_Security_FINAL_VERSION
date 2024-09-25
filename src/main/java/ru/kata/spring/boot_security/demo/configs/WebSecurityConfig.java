@@ -6,10 +6,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import ru.kata.spring.boot_security.demo.service.DetailServiceImpl;
 
 @Configuration
@@ -22,7 +20,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.successUserHandler = successUserHandler;
         this.detailServiceImpl = detailServiceImpl;
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

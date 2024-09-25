@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     setupCloseButtons();
 });
 
-
 // Функция для получения и отображения текущего пользователя
 function fetchCurrentUser() {
     console.log('Fetching current user info...');
@@ -42,7 +41,6 @@ function fetchUsers() {
             console.log('Users fetched:', response);
             const tableBody = document.getElementById('users-table-body');
             tableBody.innerHTML = ''; // Очищаем существующие строки
-
             response.forEach(user => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -57,7 +55,6 @@ function fetchUsers() {
                 `;
                 tableBody.appendChild(row);
             });
-
         })
         .catch(error => {
             console.error('Error fetching users:', error);
@@ -79,16 +76,13 @@ function loadRoles() {
             console.log('Roles fetched:', roles);
             const roleSelect = document.getElementById('roles');
             const editRoleSelect = document.getElementById('editRoles');
-
             roleSelect.innerHTML = ''; // Очищаем существующие опции
             editRoleSelect.innerHTML = '';
-
             roles.forEach(role => {
                 const option = document.createElement('option');
                 option.value = role.id;
                 option.text = role.authority; // Предполагается, что поле называется 'authority'
                 roleSelect.appendChild(option);
-
                 const editOption = document.createElement('option');
                 editOption.value = role.id;
                 editOption.text = role.authority;
@@ -104,12 +98,10 @@ function loadRoles() {
 // Обработчик отправки формы создания нового пользователя
 document.getElementById('new-user-form').addEventListener('submit', function (event) {
     event.preventDefault();
-
     const formData = new FormData(this);
     const rolesSelected = Array.from(document.getElementById('roles').selectedOptions).map(option => ({
         id: parseInt(option.value, 10)
     }));
-
     const user = {
         firstName: formData.get('firstName'),
         lastName: formData.get('lastName'),
@@ -118,9 +110,7 @@ document.getElementById('new-user-form').addEventListener('submit', function (ev
         password: formData.get('password'),
         roles: rolesSelected
     };
-
     console.log('Creating user:', user);
-
     fetch('/admin/users', {
         method: 'POST',
         headers: {
@@ -163,12 +153,10 @@ function openEditUserPopup(userId) {
             document.getElementById('editLastName').value = user.lastName;
             document.getElementById('editAge').value = user.age;
             document.getElementById('editEmail').value = user.email;
-
             const editRolesSelect = document.getElementById('editRoles');
             Array.from(editRolesSelect.options).forEach(option => {
                 option.selected = user.authorities.some(role => role.id === parseInt(option.value, 10));
             });
-
             openModal('editUserModal');
         })
         .catch(error => {
@@ -180,13 +168,11 @@ function openEditUserPopup(userId) {
 // Обработчик отправки формы редактирования пользователя
 document.getElementById('editUserForm').addEventListener('submit', function (event) {
     event.preventDefault();
-
     const formData = new FormData(this);
     const userId = parseInt(formData.get('id'), 10);
     const rolesSelected = Array.from(document.getElementById('editRoles').selectedOptions).map(option => ({
         id: parseInt(option.value, 10)
     }));
-
     const user = {
         id: userId, // Не забывайте id
         firstName: formData.get('editFirstName'),
@@ -195,9 +181,7 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
         email: formData.get('editEmail'),
         roles: rolesSelected
     };
-
     console.log('Updating user:', user);
-
     fetch('/admin/users', {
         method: 'PUT',
         headers: {
