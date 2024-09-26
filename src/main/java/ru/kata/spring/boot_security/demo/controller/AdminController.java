@@ -54,13 +54,13 @@ public class AdminController {
     }
 
     // Редактирование
-    @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         // Проверка ID
-        if (user.getId() == null) {
-            return ResponseEntity.badRequest().body(null); // Или другая ошибка
+        if (user.getId() == null || !user.getId().equals(id)) {
+            return ResponseEntity.badRequest().body(null);
         }
-        userService.updateUser(user.getId(), user);
+        userService.updateUser(id, user);
         return ResponseEntity.ok(user);
     }
 

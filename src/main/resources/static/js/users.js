@@ -155,7 +155,7 @@ function openEditUserPopup(userId) {
             document.getElementById('editEmail').value = user.email;
             const editRolesSelect = document.getElementById('editRoles');
             Array.from(editRolesSelect.options).forEach(option => {
-                option.selected = user.authorities.some(role => role.id === parseInt(option.value, 10));
+                option.selected = user.roles.some(role => role.id === parseInt(option.value, 10));
             });
             openModal('editUserModal');
         })
@@ -174,7 +174,7 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
         id: parseInt(option.value, 10)
     }));
     const user = {
-        id: userId, // Не забывайте id
+        id: userId, // ID пользователя обязательно
         firstName: formData.get('editFirstName'),
         lastName: formData.get('editLastName'),
         age: parseInt(formData.get('editAge'), 10),
@@ -182,7 +182,7 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
         roles: rolesSelected
     };
     console.log('Updating user:', user);
-    fetch('/admin/users', {
+    fetch(`/admin/users/${userId}`, { // Исправлен путь
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -191,14 +191,13 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
     })
         .then(response => {
             if (response.ok) {
-                fetchUsers(); // Перезагрузите таблицу
+                fetchUsers(); // Перезагрузка таблицы
                 alert('Пользователь успешно обновлен!');
                 closeModal('editUserModal');
             } else {
                 return response.json().then(data => {
                     console.error('Ошибка обновления:', data);
                     alert('Ошибка при обновлении пользователя: ' + data.message);
-                    //  ...  отобразить ошибку на странице
                 });
             }
         })

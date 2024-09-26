@@ -50,12 +50,11 @@ public class UserServiceImpl implements UserService {
         Optional<User> userFromDb = userDao.findById(id);
         if (userFromDb.isPresent()) {
             User existingUser = userFromDb.get();
-            // Обновляем остальные поля пользователя
+            // Обновляем поля пользователя
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setLastName(updatedUser.getLastName());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setAge(updatedUser.getAge());
-            // Обновляем роли пользователя
             existingUser.setRoles(updatedUser.getRoles());
             // Обновляем пароль, если он был изменен
             if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
